@@ -9,6 +9,8 @@ import { labelParamsDto } from '../dto/labelParams.dto';
 import { createLabelDto } from '../dto/createLabel.dto';
 import { editLabelDto } from '../dto/editLabel.dto';
 import { createProjectDto } from '../dto/createProject.dto';
+import { commentIssueDto } from '../dto/commentIssue.dto';
+import { commentsParams } from '../dto/commentsParams.dto';
 
 @ApiHeader({name: 'PRIVATE-TOKEN'})
 @ApiTags('Gitlab Apis')
@@ -27,12 +29,12 @@ export class GitlabController {
     constructor(private httpService: HttpService){}
 
     // Projects
-    @ApiOperation({ description: "Get all projects", summary: 'Get all projects' })
-    @ApiOkResponse({ description: 'projects were been shown' })
-    @Get()
-    root(): Observable<AxiosResponse<any>> {
-        return this.httpService.get('')
-    }
+    // @ApiOperation({ description: "Get all projects", summary: 'Get all projects' })
+    // @ApiOkResponse({ description: 'projects were been shown' })
+    // @Get()
+    // root(): Observable<AxiosResponse<any>> {
+    //     return this.httpService.get('')
+    // }
     
     @ApiOperation({ description: "Get a project by Id", summary: 'Get a project by Id' })
     @ApiOkResponse({ description: 'project has been shown' })
@@ -62,9 +64,9 @@ export class GitlabController {
         return this.httpService.delete(id)
     }
 
-    @ApiOperation({description: 'Upload a file', summary: 'Get all projects'})
+    @ApiOperation({description: 'Upload a file', summary: 'Upload a file'})
     @ApiOkResponse({description: 'Upload a file'})
-    @Post('')
+    @Post(':id')
     uploadfiles(@Param('id') id:string): Observable<AxiosResponse<any>> {
         return this.httpService.post(String(id))
     }
@@ -96,6 +98,22 @@ export class GitlabController {
     @Delete(':id/issues/:issue_iid')
     deleteIssue(@Param() params: editIssueDto): Observable<AxiosResponse<any>> {
         return this.httpService.delete(String(params))
+    }
+
+    // Comment on Issues 
+
+    @ApiOperation({ description: "Comment on issue", summary: 'Comment on issue' })
+    @ApiOkResponse({ description: 'Comment on issue' })
+    @Post(':id/issues/:issue_iid/notes')
+    commentOnIssue(@Param() params: commentsParams,@Body() comment: commentIssueDto): Observable<AxiosResponse<commentIssueDto>> {
+        return this.httpService.post(String(params), comment)
+    }
+
+    @ApiOperation({ description: "Get All comments in an Issue", summary: "Get All comments in an Issue" })
+    @ApiOkResponse({ description: 'Get All comments in an Issue' })
+    @Get(':id/issues/:issue_iid/notes')
+    getAllcommentsInIssue(@Param() params: commentsParams): Observable<AxiosResponse<commentIssueDto>> {
+        return this.httpService.get(String(params));
     }
 
     // Labels

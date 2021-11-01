@@ -16,7 +16,11 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
-  
+  app.use(function (req, res, next) {
+    res.header("Access-Controll-Allow-Origin", "*");
+    res.header("Access-Controll-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+  });
   
   await app.listen(3000);
 }
